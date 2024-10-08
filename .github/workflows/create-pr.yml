@@ -28,13 +28,13 @@ jobs:
 
           # base 브랜치를 동적으로 설정합니다. 예: feature/abc-* -> epic/abc
           BASE_BRANCH="epic/${FEATURE_NAME%%-*}"  # 첫 번째 하이픈 전까지 추출 (예: diary-upload -> epic/diary)
-          echo "::set-output name=base_branch::$BASE_BRANCH"
+          echo "base_branch=${BASE_BRANCH}" >> $GITHUB_ENV
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: ${{ steps.determine-base.outputs.base_branch }}
+          base: ${{ env.base_branch }}
           branch: ${{ github.ref_name }}
           title: "자동 생성 PR - ${{ github.ref_name }}"
           body: "이 PR은 자동으로 생성되었습니다."
