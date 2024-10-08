@@ -57,6 +57,7 @@ export default function DiaryWrite() {
         placeholder="다이어리 작성하기!"
       />
       <br />
+      <br />
       <input 
         type="file"
         accept='image/*'
