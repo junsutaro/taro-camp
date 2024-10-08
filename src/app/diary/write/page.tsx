@@ -49,6 +49,7 @@ export default function DiaryWrite() {
         Go to Diary
       </Link>{' '}
       <p>다이어리를 쓰시지요</p>
+      <br />
       <textarea
         value={content}
         className="border p-2"
