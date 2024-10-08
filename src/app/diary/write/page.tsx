@@ -2,12 +2,13 @@
 
 'use client';
 
-import {saveDiaryEntry} from '@/services/diaryService';
+import {saveDiaryEntry, saveImageEntry} from '@/services/diaryService';
 import Link from 'next/link';
 import {useState} from 'react';
 
 export default function DiaryWrite() {
   const [content, setContent] = useState('');
+  const [image, setImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -23,10 +24,16 @@ export default function DiaryWrite() {
     try {
       await saveDiaryEntry(content);
       console.log('Save successful!');
+
+      // 이미지가 선택된 경우
+      if (image) {
+        await saveImageEntry(image);
+        console.log('Image save successful!')
+      }
       setContent('');
     } catch (e) {
       console.error('Error adding document: ', e);
-      setError('글 저장하는 중 오류가 발생!');
+      setError('글 or 이미지 저장하는 중 오류가 발생!');
     } finally {
       setIsLoading(false);
     }
@@ -49,6 +56,11 @@ export default function DiaryWrite() {
         placeholder="다이어리 작성하기!"
       />
       <br />
+      <input 
+        type="file"
+        accept='image/*'
+        onChange={e => setImage(e.target.files?.[0] || null)}
+      />
       <button onClick={handleSave} disabled={isLoading}>
         {isLoading ? '저장 중입니다!' : '저장!'}
       </button>
