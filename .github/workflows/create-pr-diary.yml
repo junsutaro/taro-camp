@@ -1,9 +1,9 @@
-name: Create Pull Request
+name: Create Pull Request for Diary
 
 on:
   push:
     branches:
-      - feature/*  # feature 브랜치에 push될 때마다 트리거됨
+      - feature/diary-*  # 다이어리 관련 브랜치에 push될 때마다 실행
 
 jobs:
   create-pull-request:
@@ -24,5 +24,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: epic/diary
           branch: ${{ github.ref_name }}
-          title: "자동 생성 PR: ${{ github.ref_name }}"
-          body: "이 PR은 자동으로 생성되었습니다."
+          title: "Diary 작업: 자동 생성 PR - ${{ github.ref_name }}"
+          body: "이 PR은 다이어리 작업으로 자동 생성되었습니다."
