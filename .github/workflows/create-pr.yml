@@ -1,0 +1,28 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - feature/*  # feature 브랜치에 push될 때마다 트리거됨
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: epic/diary
+          branch: ${{ github.ref_name }}
+          title: "자동 생성 PR: ${{ github.ref_name }}"
+          body: "이 PR은 자동으로 생성되었습니다."
