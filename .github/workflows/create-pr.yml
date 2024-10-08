@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3  # 최신 버전 사용
         with:
-          node-version: '18'  # Node.js 18 버전 사용, Next.js 14과 호환됨
+          node-version: '20'  # Node.js 20 버전 사용, Next.js 14과 호환됨
 
       - name: Determine Base Branch
         id: determine-base
