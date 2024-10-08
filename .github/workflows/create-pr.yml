@@ -26,7 +26,7 @@ jobs:
           PREFIX="feature/"
           FEATURE_NAME="${BRANCH_NAME#$PREFIX}"  # feature/ 이후의 부분 추출 (예: feature/diary-upload -> diary-upload)
 
-          # base 브랜치를 동적으로 설정합니다. 예: feature/abc-* -> epic/abc
+          # base 브랜치를 동적으로 설정합니다. 예: feature/abc-xyz -> epic/abc
           BASE_BRANCH="epic/${FEATURE_NAME%%-*}"  # 첫 번째 하이픈 전까지 추출 (예: diary-upload -> epic/diary)
           echo "base_branch=${BASE_BRANCH}" >> $GITHUB_ENV
 
