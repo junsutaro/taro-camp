@@ -11,27 +11,27 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # 최신 버전 사용
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3  # 최신 버전 사용
         with:
-          node-version: '16'
+          node-version: '18'  # Node.js 18 버전 사용, Next.js 14과 호환됨
 
       - name: Determine Base Branch
         id: determine-base
         run: |
           # 브랜치 이름에서 "feature/" 이후의 내용을 추출합니다.
-          BRANCH_NAME=${GITHUB_REF_NAME}
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           PREFIX="feature/"
-          FEATURE_NAME=${BRANCH_NAME#$PREFIX}  # feature/ 이후의 부분 추출 (예: diary-upload -> diary-upload)
+          FEATURE_NAME="${BRANCH_NAME#$PREFIX}"  # feature/ 이후의 부분 추출 (예: feature/diary-upload -> diary-upload)
 
           # base 브랜치를 동적으로 설정합니다. 예: feature/abc-* -> epic/abc
           BASE_BRANCH="epic/${FEATURE_NAME%%-*}"  # 첫 번째 하이픈 전까지 추출 (예: diary-upload -> epic/diary)
           echo "base_branch=${BASE_BRANCH}" >> $GITHUB_ENV
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4  # 최신 버전 사용
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: ${{ env.base_branch }}
