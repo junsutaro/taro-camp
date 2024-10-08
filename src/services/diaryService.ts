@@ -1,7 +1,8 @@
 // src/services/diaryService.ts
 
 import {collection, addDoc, getDocs} from 'firebase/firestore';
-import {db} from '../firebase'; // firebase.ts에서 Firestore 가져오기
+import {db, storage} from '../firebase'; // firebase.ts에서 Firestore 가져오기
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 // 다이어리 글 저장 함수
 export const saveDiaryEntry = async (content: string) => {
@@ -28,5 +29,17 @@ export const getDiaryEntries = async () => {
     return entries;
   } catch (e) {
     console.error('Error fetching documents: ', e);
+  }
+};
+
+export const saveImageEntry = async (image: File) => {
+  try {
+    const storageRef = ref(storage, `images/${image.name}`);
+    const snapshot = await uploadBytes(storageRef, image);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    console.log('Image successfully uploaded! URL:', downloadURL);
+    return downloadURL;
+  } catch (e) {
+    console.error('Error uploading image: ', e);
   }
 };
