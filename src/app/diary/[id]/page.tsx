@@ -48,7 +48,7 @@ export default function DiaryDetailPage() {
       <h1 className="text-3xl font-bold mb-4">{entry.title}</h1>
       <div className="mb-4 w-[400px] h-[400px] relative overflow-hidden rounded-lg">
         <Image
-          src={entry.imageURL ? entry.imageURL : '/defaultImage.jpg'}
+          src={entry.imageURL ? entry.imageURL : '/defaultImage.png'}
           alt="Diary image"
           layout="fill"
           objectFit="cover"
