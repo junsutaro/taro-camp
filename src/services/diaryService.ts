@@ -1,38 +1,44 @@
 // src/services/diaryService.ts
 
-import {collection, addDoc, getDocs} from 'firebase/firestore';
-import {db, storage} from '../firebase'; // firebase.ts에서 Firestore 가져오기
+import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { db, storage } from '../firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { DiaryEntry } from '../types/diaryTypes';
 
 // 다이어리 글 저장 함수
-export const saveDiaryEntry = async (content: string) => {
+export const saveDiaryEntry = async (entry: Omit<DiaryEntry, 'id' | 'comments' | 'views' | 'timestamp'>) => {
   try {
     await addDoc(collection(db, 'diaryEntries'), {
-      content,
+      ...entry,
       timestamp: new Date(),
+      comments: [],
+      views: 0,
     });
-    console.log('Document successfully written!');
+    console.log('글 저장 성공~');
   } catch (e) {
     console.error('Error adding document: ', e);
   }
 };
 
 // 다이어리 글 읽기 함수
-export const getDiaryEntries = async () => {
+export const getDiaryEntries = async (): Promise<DiaryEntry[]> => {
   try {
-    const querySnapshot = await getDocs(collection(db, 'diaryEntries'));
-    const entries = querySnapshot.docs.map(doc => ({
+    const q = query(collection(db, 'diaryEntries'), orderBy('timestamp', 'desc'));
+    const querySnapshot = await getDocs(q);
+    const entries: DiaryEntry[] = querySnapshot.docs.map(doc => ({
       id: doc.id,
-      content: doc.data().content, // content 필드 추가
-      timestamp: doc.data().timestamp, // timestamp 필드 추가
+      ...(doc.data() as Omit<DiaryEntry, 'id'>),
+      timestamp: doc.data().timestamp.toDate(),
     }));
     return entries;
   } catch (e) {
     console.error('Error fetching documents: ', e);
+    return [];
   }
 };
 
-export const saveImageEntry = async (image: File) => {
+// 이미지 저장 함수
+export const saveImageEntry = async (image: File): Promise<string | null> => {
   try {
     const storageRef = ref(storage, `images/${image.name}`);
     const snapshot = await uploadBytes(storageRef, image);
@@ -41,5 +47,6 @@ export const saveImageEntry = async (image: File) => {
     return downloadURL;
   } catch (e) {
     console.error('Error uploading image: ', e);
+    return null;
   }
 };
