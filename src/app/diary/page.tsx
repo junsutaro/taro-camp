@@ -52,7 +52,7 @@ export default function DiaryListPage() {
                 <div>
                   <div className="mb-4 w-full h-[150px] relative overflow-hidden rounded-lg">
                     <Image
-                      src={entry.imageURL ? entry.imageURL : '/defaultImage.jpg'}
+                      src={entry.imageURL ? entry.imageURL : '/defaultImage.png'}
                       alt="Diary preview image"
                       fill
                       className="object-cover"
