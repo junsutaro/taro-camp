@@ -24,17 +24,9 @@ jobs:
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           PREFIX="feature/"
           FEATURE_NAME="${BRANCH_NAME#$PREFIX}"
-          BASE_BRANCH="epic/${FEATURE_NAME%%-*}"
-          echo "BRANCH_NAME=${BRANCH_NAME}"  # 브랜치 이름 출력
-          echo "FEATURE_NAME=${FEATURE_NAME}"  # feature/ 이후 부분 출력
-          echo "BASE_BRANCH=${BASE_BRANCH}"  # epic/ 브랜치 이름 출력
+          BASE_BRANCH="epic/${FEATURE_NAME%%-*}"  # feature/ 이후 첫 번째 하이픈까지의 문자열로 epic 브랜치 이름 생성
           echo "base_branch=${BASE_BRANCH}" >> $GITHUB_ENV
-          
-      - name: Debug PR Inputs
-        run: |
-          echo "Base Branch: ${{ env.base_branch }}"
-          echo "Feature Branch: ${{ github.ref_name }}"
-          
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4  # 최신 버전 사용
         with:
