@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import Sidebar from '@/components/sidebar';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -17,8 +18,8 @@ export const metadata: Metadata = {
   title: 'Taro Camp',
   description: 'Marketing, Cat, Diary ...',
   icons: {
-    icon: "/favicon.png"
-  }
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
@@ -29,7 +30,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} antialiased m-10`}>
+      <Sidebar />
         {children}
       </body>
     </html>
