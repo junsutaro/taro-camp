@@ -6,6 +6,7 @@ export default function Marketing() {
       <p>PR테스트</p>
       <p>PR테스트2</p>
       <p>PR테스트3</p>
+      <p>PR테스트4</p>
     </div>
   );
 }
