@@ -31,7 +31,6 @@ export default function RootLayoutContent({
       const width = window.innerWidth;
       setIsMobile(width < 768);
       setIsLargeScreen(width >= 1280);
-      console.log('width', width);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
