@@ -41,9 +41,16 @@ export default function DiaryListPage() {
 
   return (
     <div className="diary-list max-w-full mx-auto">
-      <h1 className="text-3xl font-bold text-center mb-8">다이어리</h1>
+      <h1 className="text-3xl font-bold text-center my-2">다이어리</h1>
+      <div className='flex justify-end mb-4'>
+        <Link href="/diary/write">
+          <button className="write-button border text-sm text-black px-2 py-2 rounded hover:bg-lime-600 transition-colors">
+            글 작성
+          </button>
+        </Link>
+      </div>
       <div className="entries grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-      {currentEntries.length > 0 ? (
+        {currentEntries.length > 0 ? (
           currentEntries.map(entry => (
             <div
               key={entry.id}
@@ -72,7 +79,7 @@ export default function DiaryListPage() {
                     {entry.author?.name || '익명의 도도새'}
                   </p>
                   <p className="text-sm text-gray-400">
-                    {new Date(entry.timestamp).toLocaleDateString()}
+                    {new Date(entry.timestamp).toLocaleString()}
                   </p>
                 </div>
               </Link>
@@ -84,7 +91,7 @@ export default function DiaryListPage() {
           </p>
         )}
       </div>
-      <div className="pagination flex justify-center mt-8">
+      <div className="pagination flex justify-center my-6">
         {Array.from(
           {length: Math.ceil(entries.length / entriesPerPage)},
           (_, index) => (
@@ -100,13 +107,6 @@ export default function DiaryListPage() {
             </button>
           ),
         )}
-      </div>
-      <div className="text-center mt-8">
-        <Link href="/diary/write">
-          <button className="write-button bg-lime-700 text-white px-4 py-2 rounded hover:bg-lime-600 transition-colors">
-            새 글 작성!
-          </button>
-        </Link>
       </div>
     </div>
   );

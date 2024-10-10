@@ -4,7 +4,7 @@
 
 import {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import {getDiaryEntries} from '@/services/diaryService';
+import {deleteCommentFromDiary, getDiaryEntries} from '@/services/diaryService';
 import {DiaryEntry, Comment} from '@/types/diaryTypes';
 import CommentForm from '@/components/commentForm';
 import Image from 'next/image';
@@ -22,6 +22,7 @@ export default function DiaryDetailPage() {
         try {
           const entries = await getDiaryEntries();
           const selectedEntry = entries.find(entry => entry.id === id);
+
           setEntry(selectedEntry || null);
         } catch (error) {
           console.error('Failed to fetch diary entry:', error);
@@ -35,7 +36,7 @@ export default function DiaryDetailPage() {
   }, [id]);
 
   // 댓글 작성 후 추가된 댓글을 다시 불러오기 위한 함수
-  const handleCommentAdded = async () => {
+  const handleCommentChanged = async () => {
     if (id) {
       const entries = await getDiaryEntries();
       const updatedEntry = entries.find(entry => entry.id === id);
@@ -72,23 +73,52 @@ export default function DiaryDetailPage() {
         {entry.author?.name || '익명의 도도새'}
       </p>
       <p className="text-sm text-gray-400 mb-4">
-        {new Date(entry.timestamp).toLocaleDateString()}
+        {new Date(entry.timestamp).toLocaleString()}
       </p>
 
-      <CommentForm diaryId={id as string} onCommentAdded={handleCommentAdded} />
+      <CommentForm
+        diaryId={id as string}
+        onCommentAdded={handleCommentChanged}
+      />
 
       <div className="comments-section mt-8">
         <h2 className="text-2xl font-semibold mb-4">댓글</h2>
         {entry.comments.length > 0 ? (
-          entry.comments.map((comment: Comment) => (
-            <div key={comment.id} className="comment mb-4 p-4 border rounded">
-              <p className="text-sm text-gray-500">{comment.author.name}</p>
-              <p className="text-gray-700">{comment.content}</p>
-              <p className="text-xs text-gray-400">
-                {new Date(comment.timestamp).toLocaleDateString()}
-              </p>
-            </div>
-          ))
+          entry.comments.map((comment: Comment) => {
+            // 댓글 timestamp 변환을 렌더링 시점에 처리
+            const commentDate =
+              comment.timestamp instanceof Date
+                ? comment.timestamp
+                : comment.timestamp.toDate();
+
+            return (
+              <div key={comment.id} className="comment mb-4 p-4 border rounded">
+                <p className="text-sm text-gray-500">{comment.author.name}</p>
+                <p className="text-gray-700">{comment.content}</p>
+                <div className="flex justify-between">
+                  <p className="text-xs text-gray-400 mt-2">
+                    {new Date(commentDate).toLocaleString()}
+                  </p>
+                  {/* 삭제버튼 */}
+                  <button
+                    className="text-red-500 hover:text-red-700"
+                    onClick={async () => {
+                      try {
+                        await deleteCommentFromDiary(
+                          entry.id as string,
+                          comment,
+                        ); // comment 객체를 넘겨줌
+                        await handleCommentChanged(); // 댓글 삭제 후 UI 업데이트 함수
+                      } catch (error) {
+                        console.error('댓글 삭제 실패:', error);
+                      }
+                    }}>
+                    삭제
+                  </button>
+                </div>
+              </div>
+            );
+          })
         ) : (
           <p className="text-gray-500">No 댓글 Here</p>
         )}
