@@ -1,5 +1,7 @@
 // src/types/diaryTypes.ts
 
+import firebase from "firebase/compat/app";
+
 // 작성자의 타입 정의
 type Author = {
   uid?: string; // 회원가입 기능이 없으므로 optional
@@ -12,13 +14,12 @@ export interface CommentFormProps {
   onCommentAdded?: () => Promise<void>; // 댓글 추가 후 수행할 함수 (선택적)
 }
 
-
 // 댓글 타입 정의
 export type Comment = {
   id: string;
   author: Author;
   content: string;
-  timestamp: Date;
+  timestamp: Date | firebase.firestore.Timestamp; // 수정: Firestore Timestamp 추가
 };
 
 // 다이어리 글 타입 정의

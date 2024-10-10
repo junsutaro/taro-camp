@@ -24,7 +24,7 @@ export default function MainPage() {
 
   return (
     <div className="main-page min-h-screen flex flex-col items-center bg-cover bg-center">
-      <h1 className="text-3xl font-bold text-center mb-8">랜덤픽</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">🎹 오마카세 🎺</h1>
       {randomLink && (
         <div className="youtube-video-container w-full max-w-4xl aspect-w-16 aspect-h-9 relative">
           <iframe
