@@ -5,6 +5,7 @@
 import localFont from 'next/font/local';
 import Sidebar from '@/components/sidebar';
 import {useEffect, useState} from 'react';
+import Navbar from '@/components/navbar';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -30,7 +31,7 @@ export default function RootLayoutContent({
       const width = window.innerWidth;
       setIsMobile(width < 768);
       setIsLargeScreen(width >= 1280);
-      console.log('width', width)
+      console.log('width', width);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -43,7 +44,7 @@ export default function RootLayoutContent({
       className={`${geistSans.variable} ${geistMono.variable} antialiased m-10`}>
       <div className={`flex min-h-screen`}>
         {!isMobile && (
-          <div className="w-64 fixed top-0 left-0 h-full shadow-md z-10">
+          <div className="w-64 fixed top-0 left-0 h-full z-10">
             <Sidebar />
           </div>
         )}
@@ -58,6 +59,11 @@ export default function RootLayoutContent({
           {' '}
           {children}
         </div>
+        {isMobile && (
+          <div>
+            <Navbar />
+          </div>
+        )}
       </div>
     </div>
   );
