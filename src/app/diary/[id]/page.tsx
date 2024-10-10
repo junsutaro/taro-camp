@@ -100,7 +100,7 @@ export default function DiaryDetailPage() {
                     {new Date(commentDate).toLocaleString()}
                   </p>
                   {/* 삭제버튼 */}
-                  <button
+                  {/* <button
                     className="text-red-500 hover:text-red-700"
                     onClick={async () => {
                       try {
@@ -114,7 +114,7 @@ export default function DiaryDetailPage() {
                       }
                     }}>
                     삭제
-                  </button>
+                  </button> */}
                 </div>
               </div>
             );
