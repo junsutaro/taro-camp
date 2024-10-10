@@ -58,11 +58,7 @@ export default function RootLayoutContent({
           {' '}
           {children}
         </div>
-        {isMobile && (
-          <div>
-            <Navbar />
-          </div>
-        )}
+        {isMobile && <Navbar />}
       </div>
     </div>
   );

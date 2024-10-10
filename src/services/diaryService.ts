@@ -9,6 +9,7 @@ import {
   doc,
   updateDoc,
   arrayUnion,
+  getDoc,
 } from 'firebase/firestore';
 import {db, storage} from '../firebase';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
@@ -33,7 +34,7 @@ export const saveDiaryEntry = async (
 
 // 댓글 추가 함수
 export const addCommentToDiary = async (
-  { diaryId }: CommentFormProps,
+  {diaryId}: CommentFormProps,
   comment: Omit<Comment, 'id'>,
 ) => {
   try {
@@ -78,5 +79,31 @@ export const saveImageEntry = async (image: File): Promise<string | null> => {
   } catch (e) {
     console.error('Error uploading image: ', e);
     return null;
+  }
+};
+
+export const deleteCommentFromDiary = async (
+  diaryId: string,
+  comment: Comment,
+) => {
+  try {
+    const diaryRef = doc(db, 'diaryEntries', diaryId);
+    const diarySnap = await getDoc(diaryRef);
+
+    if (diarySnap.exists()) {
+      const data = diarySnap.data();
+      const updatedComments = data.comments.filter(
+        (c: Comment) => c.id !== comment.id,
+      ); // 해당 댓글을 제외한 배열
+
+      await updateDoc(diaryRef, {
+        comments: updatedComments, // 댓글 목록 업데이트
+      });
+      console.log('댓글 삭제 성공!');
+    } else {
+      console.error('해당 글이 존재하지 않습니다.');
+    }
+  } catch (error) {
+    console.error('댓글 삭제 실패:', error);
   }
 };
