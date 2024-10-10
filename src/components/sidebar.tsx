@@ -1,7 +1,6 @@
 // src/components/Sidebar.tsx
 
 import Link from 'next/link';
-import {FaBook, FaChartLine, FaHome} from 'react-icons/fa';
 
 export default function Sidebar() {
   return (
@@ -10,19 +9,19 @@ export default function Sidebar() {
       <nav className="flex flex-col space-y-4">
         <Link href="/">
           <div className="flex items-center space-x-2 cursor-pointer hover:text-blue-600 transition-colors">
-            <FaHome />
+            <span>🏠</span>
             <span>Home</span>
           </div>
         </Link>
         <Link href="/diary">
           <div className="flex items-center space-x-2 cursor-pointer hover:text-blue-600 transition-colors">
-            <FaBook />
+            <span>📖</span>
             <span>Diary</span>
           </div>
         </Link>
         <Link href="/marketing">
           <div className="flex items-center space-x-2 cursor-pointer hover:text-blue-600 transition-colors">
-            <FaChartLine />
+            <span>📊</span>
             <span>Marketing</span>
           </div>
         </Link>
