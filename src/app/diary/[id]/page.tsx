@@ -38,9 +38,7 @@ export default function DiaryDetailPage() {
   }
 
   if (!entry) {
-    return (
-      <div className="text-center text-gray-500">글이 없어요!</div>
-    );
+    return <div className="text-center text-gray-500">글이 없어요!</div>;
   }
 
   return (
@@ -51,8 +49,8 @@ export default function DiaryDetailPage() {
           src={entry.imageURL ? entry.imageURL : '/defaultImage.png'}
           alt="Diary image"
           fill
-          objectFit="cover"
-          priority
+          className="object-cover" // CSS 클래스를 통해 object-fit을 설정
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px" // 성능 최적화를 위해 sizes 설정
         />
       </div>
       <p className="text-gray-700 mb-6">{entry.content}</p>
