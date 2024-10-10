@@ -1,12 +1,23 @@
 // src/services/diaryService.ts
 
-import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
-import { db, storage } from '../firebase';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { DiaryEntry } from '../types/diaryTypes';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  updateDoc,
+  arrayUnion,
+} from 'firebase/firestore';
+import {db, storage} from '../firebase';
+import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
+import {Comment, CommentFormProps, DiaryEntry} from '../types/diaryTypes';
 
 // 다이어리 글 저장 함수
-export const saveDiaryEntry = async (entry: Omit<DiaryEntry, 'id' | 'comments' | 'views' | 'timestamp'>) => {
+export const saveDiaryEntry = async (
+  entry: Omit<DiaryEntry, 'id' | 'comments' | 'views' | 'timestamp'>,
+) => {
   try {
     await addDoc(collection(db, 'diaryEntries'), {
       ...entry,
@@ -20,10 +31,29 @@ export const saveDiaryEntry = async (entry: Omit<DiaryEntry, 'id' | 'comments' |
   }
 };
 
+// 댓글 추가 함수
+export const addCommentToDiary = async (
+  { diaryId }: CommentFormProps,
+  comment: Omit<Comment, 'id'>,
+) => {
+  try {
+    const dirayRef = doc(db, 'diaryEntries', diaryId);
+    await updateDoc(dirayRef, {
+      comments: arrayUnion(comment),
+    });
+    console.log('댓글 추가 성공!');
+  } catch (e) {
+    console.log('에러 발생', e);
+  }
+};
+
 // 다이어리 글 읽기 함수
 export const getDiaryEntries = async (): Promise<DiaryEntry[]> => {
   try {
-    const q = query(collection(db, 'diaryEntries'), orderBy('timestamp', 'desc'));
+    const q = query(
+      collection(db, 'diaryEntries'),
+      orderBy('timestamp', 'desc'),
+    );
     const querySnapshot = await getDocs(q);
     const entries: DiaryEntry[] = querySnapshot.docs.map(doc => ({
       id: doc.id,
