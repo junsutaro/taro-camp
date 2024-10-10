@@ -5,7 +5,8 @@
 import {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 import {getDiaryEntries} from '@/services/diaryService';
-import {DiaryEntry} from '@/types/diaryTypes';
+import {DiaryEntry, Comment} from '@/types/diaryTypes';
+import CommentForm from '@/components/commentForm';
 import Image from 'next/image';
 
 export default function DiaryDetailPage() {
@@ -33,24 +34,37 @@ export default function DiaryDetailPage() {
     }
   }, [id]);
 
+  // 댓글 작성 후 추가된 댓글을 다시 불러오기 위한 함수
+  const handleCommentAdded = async () => {
+    if (id) {
+      const entries = await getDiaryEntries();
+      const updatedEntry = entries.find(entry => entry.id === id);
+      setEntry(updatedEntry || null);
+    }
+  };
+
   if (loading) {
     return <div className="text-center text-gray-500">로딩중...</div>;
   }
 
   if (!entry) {
-    return <div className="text-center text-gray-500">글이 없어요!</div>;
+    return (
+      <div className="text-center text-gray-500">이 URL에는 글이 없어요!</div>
+    );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-full md:max-w-xl mx-auto">
       <h1 className="text-3xl font-bold mb-4">{entry.title}</h1>
-      <div className="mb-4 w-[400px] h-[400px] relative overflow-hidden rounded-lg">
+      <div className="mb-4 w-full md:w-[400px] h-auto relative overflow-hidden rounded-lg">
         <Image
           src={entry.imageURL ? entry.imageURL : '/defaultImage.png'}
           alt="Diary image"
-          fill
-          className="object-cover" // CSS 클래스를 통해 object-fit을 설정
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px" // 성능 최적화를 위해 sizes 설정
+          layout="responsive" // 이미지를 반응형으로 설정
+          width={400}
+          height={400}
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
         />
       </div>
       <p className="text-gray-700 mb-6">{entry.content}</p>
@@ -60,10 +74,30 @@ export default function DiaryDetailPage() {
       <p className="text-sm text-gray-400 mb-4">
         {new Date(entry.timestamp).toLocaleDateString()}
       </p>
+
+      <CommentForm diaryId={id as string} onCommentAdded={handleCommentAdded} />
+
+      <div className="comments-section mt-8">
+        <h2 className="text-2xl font-semibold mb-4">댓글</h2>
+        {entry.comments.length > 0 ? (
+          entry.comments.map((comment: Comment) => (
+            <div key={comment.id} className="comment mb-4 p-4 border rounded">
+              <p className="text-sm text-gray-500">{comment.author.name}</p>
+              <p className="text-gray-700">{comment.content}</p>
+              <p className="text-xs text-gray-400">
+                {new Date(comment.timestamp).toLocaleDateString()}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">No 댓글 Here</p>
+        )}
+      </div>
+
       <button
         onClick={() => router.back()}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-        Go Back
+        className="bg-lime-700 text-white px-4 py-2 rounded hover:bg-lime-600 transition-colors mt-6">
+        뒤로가기~{' '}
       </button>
     </div>
   );
