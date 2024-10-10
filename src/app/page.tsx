@@ -26,10 +26,9 @@ export default function MainPage() {
     <div className="main-page min-h-screen flex flex-col items-center bg-cover bg-center">
       <h1 className="text-3xl font-bold text-center mb-8">랜덤픽</h1>
       {randomLink && (
-        <div className="youtube-video-container flex justify-center items-center">
+        <div className="youtube-video-container w-full max-w-4xl aspect-w-16 aspect-h-9 relative">
           <iframe
-            width="700"
-            height="550"
+            className="absolute top-0 left-0 w-full h-full"
             src={randomLink}
             title="YouTube video player"
             frameBorder="0"
