@@ -20,7 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <RootLayoutContent>{children}</RootLayoutContent>
+        <div className='mb-20'>
+          <RootLayoutContent>{children}</RootLayoutContent>
+        </div>
       </body>
     </html>
   );
