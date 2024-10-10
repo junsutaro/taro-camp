@@ -50,8 +50,9 @@ export default function DiaryDetailPage() {
         <Image
           src={entry.imageURL ? entry.imageURL : '/defaultImage.png'}
           alt="Diary image"
-          layout="fill"
+          fill
           objectFit="cover"
+          priority
         />
       </div>
       <p className="text-gray-700 mb-6">{entry.content}</p>
