@@ -4,7 +4,7 @@
 
 import {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import {deleteCommentFromDiary, getDiaryEntries} from '@/services/diaryService';
+import { getDiaryEntries} from '@/services/diaryService';
 import {DiaryEntry, Comment} from '@/types/diaryTypes';
 import CommentForm from '@/components/commentForm';
 import Image from 'next/image';
