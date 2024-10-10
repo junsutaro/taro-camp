@@ -1,18 +1,8 @@
-import type {Metadata} from 'next';
-import localFont from 'next/font/local';
-import './globals.css';
-import Sidebar from '@/components/sidebar';
+// src/app/layout.tsx (기본 레이아웃 파일)
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
-});
+import type {Metadata} from 'next';
+import RootLayoutContent from './RootLayoutContent';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Taro Camp',
@@ -29,10 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased m-10`}>
-      <Sidebar />
-        {children}
+      <body>
+        <RootLayoutContent>{children}</RootLayoutContent>
       </body>
     </html>
   );
