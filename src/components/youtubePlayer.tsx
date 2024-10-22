@@ -15,7 +15,7 @@ const youtubeLinks = [
 export default function YoutubePlayer() {
   const [randomLink, setRandomLink] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
+//   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const [showPlayer, setShowPlayer] = useState(true); // 플레이어를 보여줄지 여부를 관리하는 상태
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function YoutubePlayer() {
     const handleResize = () => {
       const width = window.innerWidth;
       setIsMobile(width < 768);
-      setIsLargeScreen(width > 1280);
+    //   setIsLargeScreen(width > 1280);
     };
 
     handleResize();
