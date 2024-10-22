@@ -3,6 +3,7 @@
 import type {Metadata} from 'next';
 import RootLayoutContent from './RootLayoutContent';
 import './globals.css';
+import YoutubePlayer from '@/components/youtubePlayer';
 
 export const metadata: Metadata = {
   title: 'Taro Camp',
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body>
         <div className='mb-20'>
           <RootLayoutContent>{children}</RootLayoutContent>
+          <YoutubePlayer/>
         </div>
       </body>
     </html>
