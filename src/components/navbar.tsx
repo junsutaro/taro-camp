@@ -21,6 +21,12 @@ export default function Navbar() {
           <span>Marketing</span>
         </div>
       </Link>
+      <Link href="/portfolio">
+        <div className="flex flex-col items-center cursor-pointer">
+          <span>💼</span>
+          <span>Portfolio</span>
+        </div>
+      </Link>
     </div>
   );
 }
