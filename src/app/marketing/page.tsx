@@ -1,3 +1,5 @@
+// src/app/marketing/page.tsx
+
 export default function Marketing() {
   return (
     <div className="text-center">
