@@ -59,12 +59,14 @@ export default function YoutubePlayer() {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen></iframe>
       </div>
-      <button
-        onClick={() => setKey(prev => prev + 1)}
-        className={`fixed z-20 left-0 rounded-lg 
+      {showPlayer && (
+        <button
+          onClick={() => setKey(prev => prev + 1)}
+          className={`fixed z-20 left-0 rounded-lg 
         ${isMobile ? 'bottom-60' : 'bottom-64'}`}>
-        랜덤 돌리기
-      </button>
+          랜덤 돌리기
+        </button>
+      )}
     </div>
   );
 }
