@@ -4,17 +4,27 @@
 
 import {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import { getDiaryEntries} from '@/services/diaryService';
+import {getDiaryEntries} from '@/services/diaryService';
 import {DiaryEntry, Comment} from '@/types/diaryTypes';
 import CommentForm from '@/components/commentForm';
 import Image from 'next/image';
+import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
 
 export default function DiaryDetailPage() {
   const [entry, setEntry] = useState<DiaryEntry | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<User | null>(null);
   const params = useParams();
   const router = useRouter();
   const id = params?.id;
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+      setUser(currentUser); // 현재 로그인한 사용자 정보를 저장
+    });
+    return () => unsubscribe(); // 컴포넌트 언마운트 시 구독 해제
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -79,6 +89,7 @@ export default function DiaryDetailPage() {
       <CommentForm
         diaryId={id as string}
         onCommentAdded={handleCommentChanged}
+        userName={user?.displayName || '익명의 도도새'} // 사용자 이름 전달
       />
 
       <div className="comments-section mt-8">
@@ -99,22 +110,6 @@ export default function DiaryDetailPage() {
                   <p className="text-xs text-gray-400 mt-2">
                     {new Date(commentDate).toLocaleString()}
                   </p>
-                  {/* 삭제버튼 */}
-                  {/* <button
-                    className="text-red-500 hover:text-red-700"
-                    onClick={async () => {
-                      try {
-                        await deleteCommentFromDiary(
-                          entry.id as string,
-                          comment,
-                        ); // comment 객체를 넘겨줌
-                        await handleCommentChanged(); // 댓글 삭제 후 UI 업데이트 함수
-                      } catch (error) {
-                        console.error('댓글 삭제 실패:', error);
-                      }
-                    }}>
-                    삭제
-                  </button> */}
                 </div>
               </div>
             );

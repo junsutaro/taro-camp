@@ -1,6 +1,6 @@
 // src/types/diaryTypes.ts
 
-import firebase from "firebase/compat/app";
+import firebase from 'firebase/compat/app';
 
 // 작성자의 타입 정의
 type Author = {
@@ -12,6 +12,7 @@ type Author = {
 export interface CommentFormProps {
   diaryId: string;
   onCommentAdded?: () => Promise<void>; // 댓글 추가 후 수행할 함수 (선택적)
+  userName?: string; // userName prop 추가
 }
 
 // 댓글 타입 정의
