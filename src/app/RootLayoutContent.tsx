@@ -5,7 +5,7 @@
 import localFont from 'next/font/local';
 import Sidebar from '@/components/sidebar';
 import {useEffect, useState} from 'react';
-import Navbar from '@/components/navbar';
+import Navbar from '@/components/bottomNavbar';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
