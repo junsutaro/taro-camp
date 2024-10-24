@@ -1,6 +1,6 @@
 // src/components/commentForm.tsx
 
-import {FormEvent, useState} from 'react';
+import {FormEvent, useEffect, useState} from 'react';
 import {addCommentToDiary} from '@/services/diaryService'; // 댓글 추가 함수
 import {CommentFormProps} from '@/types/diaryTypes';
 import {Comment} from '@/types/diaryTypes';
@@ -8,9 +8,16 @@ import {Comment} from '@/types/diaryTypes';
 export default function CommentForm({
   diaryId,
   onCommentAdded,
+  userName,
 }: CommentFormProps) {
-  const [authorName, setAuthorName] = useState('');
+  const [authorName, setAuthorName] = useState(userName || ''); // userName으로 초기 설정
   const [content, setContent] = useState('');
+
+  useEffect(() => {
+    if (userName) {
+      setAuthorName(userName); // 로그인한 사용자일 경우 userName으로 설정
+    }
+  }, [userName]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -37,22 +44,24 @@ export default function CommentForm({
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <div className="flex flex-col sm:flex-row items-start gap-2">
-        <input
-          type="text"
-          value={authorName}
-          onChange={e => setAuthorName(e.target.value)}
-          placeholder="이름"
-          required
-          className="border p-2 w-2/6 sm:w-3/12" 
+        {!userName && (
+          <input
+            type="text"
+            value={authorName}
+            onChange={e => setAuthorName(e.target.value)}
+            placeholder="이름"
+            required
+            className="border p-2 w-2/6 sm:w-3/12"
           />
+        )}
         <input
           type="text"
           value={content}
           onChange={e => setContent(e.target.value)}
           placeholder="댓글내용"
           required
-          className="border p-2 w-full sm:w-9/12" 
-          />
+          className="border p-2 w-full sm:w-9/12"
+        />
         <button
           type="submit"
           className="bg-lime-800 text-sm h-10 w-auto text-white px-3 hover:bg-lime-700 rounded whitespace-nowrap">
