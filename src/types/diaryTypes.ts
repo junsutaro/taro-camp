@@ -33,6 +33,6 @@ export type DiaryEntry = {
   tags?: string[]; // 태그 목록 (optional)
   imageURL?: string | null; // 이미지 URL (optional)
   location?: string | null; // 위치 정보 (optional)
-  comments: Comment[]; // 댓글 목록
+  comments: DiaryComment[]; // 댓글 목록
   views: number; // 조회수
 };
