@@ -1,23 +1,23 @@
 // src/components/bottomNavbar.tsx
 
 import Link from 'next/link';
-import {getAuth, onAuthStateChanged, signOut} from 'firebase/auth';
+import {onAuthStateChanged, signOut} from 'firebase/auth';
 import {useState, useEffect} from 'react';
+import {auth} from '@/firebase';
 
 export default function BottomNavbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, user => {
       setIsLoggedIn(!!user);
+      
     });
+
     return () => unsubscribe();
   }, []);
 
   const handleLogout = async () => {
-    const auth = getAuth();
-
     try {
       await signOut(auth);
       alert('로그아웃 성공~');

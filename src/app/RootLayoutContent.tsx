@@ -6,6 +6,8 @@ import localFont from 'next/font/local';
 import Sidebar from '@/components/sidebar';
 import {useEffect, useState} from 'react';
 import Navbar from '@/components/bottomNavbar';
+import { AllProviders } from '@/contexts/AllProviders';
+
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -26,12 +28,13 @@ export default function RootLayoutContent({
   const [isMobile, setIsMobile] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
 
+  const handleResize = () => {
+    const width = window.innerWidth;
+    setIsMobile(width < 768);
+    setIsLargeScreen(width >= 1280);
+  };
+
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768);
-      setIsLargeScreen(width >= 1280);
-    };
     handleResize();
     window.addEventListener('resize', handleResize);
 
@@ -39,27 +42,29 @@ export default function RootLayoutContent({
   }, []);
 
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} antialiased m-10`}>
-      <div className={`flex min-h-screen`}>
-        {!isMobile && (
-          <div className="w-64 fixed top-0 left-0 h-full z-10">
-            <Sidebar />
+    <AllProviders>
+      <div
+        className={`${geistSans.variable} ${geistMono.variable} antialiased m-10`}>
+        <div className={`flex min-h-screen`}>
+          {!isMobile && (
+            <div className="w-64 fixed top-0 left-0 h-full z-10">
+              <Sidebar />
+            </div>
+          )}
+          <div
+            className={`flex-1 ${
+              isMobile
+                ? 'p-0'
+                : isLargeScreen
+                ? 'ml-64 px-40' // 큰 화면에서 카드 폭 제한
+                : 'ml-64 px-4'
+            }`}>
+            {' '}
+            {children}
           </div>
-        )}
-        <div
-          className={`flex-1 ${
-            isMobile
-              ? 'p-0'
-              : isLargeScreen
-              ? 'ml-64 px-40' // 큰 화면에서 카드 폭 제한
-              : 'ml-64 px-4'
-          }`}>
-          {' '}
-          {children}
+          {isMobile && <Navbar />}
         </div>
-        {isMobile && <Navbar />}
       </div>
-    </div>
+    </AllProviders>
   );
 }

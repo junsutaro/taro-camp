@@ -89,7 +89,7 @@ export default function DiaryDetailPage() {
       <CommentForm
         diaryId={id as string}
         onCommentAdded={handleCommentChanged}
-        userName={user?.displayName || '익명의 도도새'} // 사용자 이름 전달
+        userName={user?.displayName || ''} // 사용자 이름 전달
       />
 
       <div className="comments-section mt-8">
