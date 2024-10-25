@@ -5,7 +5,7 @@
 import {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 import {getDiaryEntries} from '@/services/diaryService';
-import {DiaryEntry, Comment} from '@/types/diaryTypes';
+import {DiaryEntry, DiaryComment} from '@/types/diaryTypes';
 import CommentForm from '@/components/commentForm';
 import Image from 'next/image';
 import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
@@ -95,7 +95,7 @@ export default function DiaryDetailPage() {
       <div className="comments-section mt-8">
         <h2 className="text-2xl font-semibold mb-4">댓글</h2>
         {entry.comments.length > 0 ? (
-          entry.comments.map((comment: Comment) => {
+          entry.comments.map((comment: DiaryComment) => {
             // 댓글 timestamp 변환을 렌더링 시점에 처리
             const commentDate =
               comment.timestamp instanceof Date
