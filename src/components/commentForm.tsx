@@ -4,6 +4,8 @@ import {FormEvent, useContext, useEffect, useState} from 'react';
 import {addCommentToDiary} from '@/services/diaryService'; // 댓글 추가 함수
 import {CommentFormProps, DiaryComment} from '@/types/diaryTypes';
 import {AuthContext} from '@/contexts/AuthContext';
+import { v4 as uuidv4 } from 'uuid';
+
 
 export default function CommentForm({
   diaryId,
@@ -26,8 +28,9 @@ export default function CommentForm({
     e.preventDefault();
 
     // 댓글 추가 함수 호출
-    const newComment: Omit<DiaryComment, 'id'> = {
-      author: {name: authorName},
+    const newComment: DiaryComment = { 
+      id: uuidv4(), // 고유 ID 생성
+      author: { name: authorName },
       content,
       timestamp: new Date(),
     };
