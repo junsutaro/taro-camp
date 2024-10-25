@@ -4,7 +4,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/firebase';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -21,7 +22,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const auth = getAuth();
+   
       const email = `${username}@example.com`; // 아이디를 이메일 형식으로 변환
       await signInWithEmailAndPassword(auth, email, password); // 로그인 요청
       alert('로그인 성공!');

@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
 import {subscribeToAuthChanges} from '@/services/authService';
-import {getAuth, signOut, User} from 'firebase/auth';
+import {signOut, User} from 'firebase/auth';
+import {auth} from '@/firebase';
 
 export default function Sidebar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -19,8 +20,6 @@ export default function Sidebar() {
   }, []);
 
   const handleLogout = async () => {
-    const auth = getAuth();
-
     try {
       await signOut(auth);
       alert('로그아웃 했어요!');

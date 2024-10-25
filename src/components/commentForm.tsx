@@ -1,9 +1,9 @@
 // src/components/commentForm.tsx
 
-import {FormEvent, useEffect, useState} from 'react';
+import {FormEvent, useContext, useEffect, useState} from 'react';
 import {addCommentToDiary} from '@/services/diaryService'; // 댓글 추가 함수
-import {CommentFormProps} from '@/types/diaryTypes';
-import {Comment} from '@/types/diaryTypes';
+import {CommentFormProps, DiaryComment} from '@/types/diaryTypes';
+import {AuthContext} from '@/contexts/AuthContext';
 
 export default function CommentForm({
   diaryId,
@@ -12,18 +12,21 @@ export default function CommentForm({
 }: CommentFormProps) {
   const [authorName, setAuthorName] = useState(userName || ''); // userName으로 초기 설정
   const [content, setContent] = useState('');
+  const {user, isLoggedIn} = useContext(AuthContext);
 
   useEffect(() => {
-    if (userName) {
-      setAuthorName(userName); // 로그인한 사용자일 경우 userName으로 설정
+    if (isLoggedIn && user) {
+      setAuthorName(user.displayName || '');
+    } else {
+      setAuthorName('');
     }
-  }, [userName]);
+  }, [isLoggedIn, user]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     // 댓글 추가 함수 호출
-    const newComment: Omit<Comment, 'id'> = {
+    const newComment: Omit<DiaryComment, 'id'> = {
       author: {name: authorName},
       content,
       timestamp: new Date(),
@@ -44,16 +47,16 @@ export default function CommentForm({
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <div className="flex flex-col sm:flex-row items-start gap-2">
-        {!userName && (
+        {!isLoggedIn ? (
           <input
             type="text"
-            value={authorName}
+            value={authorName || ''}
             onChange={e => setAuthorName(e.target.value)}
             placeholder="이름"
             required
             className="border p-2 w-2/6 sm:w-3/12"
           />
-        )}
+        ) : null}
         <input
           type="text"
           value={content}

@@ -16,7 +16,7 @@ export interface CommentFormProps {
 }
 
 // 댓글 타입 정의
-export type Comment = {
+export type DiaryComment = {
   id: string;
   author: Author;
   content: string;
