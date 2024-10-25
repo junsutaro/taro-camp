@@ -22,6 +22,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
       setUser(currentUser);
     });
 
+    
     return () => unsubscribe();
   }, []);
 
