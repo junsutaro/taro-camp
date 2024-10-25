@@ -13,8 +13,7 @@ import {
 } from 'firebase/firestore';
 import {db, storage} from '../firebase';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
-import {Comment, CommentFormProps, DiaryEntry} from '../types/diaryTypes';
-
+import {DiaryComment, CommentFormProps, DiaryEntry} from '../types/diaryTypes';
 // 다이어리 글 저장 함수
 export const saveDiaryEntry = async (
   entry: Omit<DiaryEntry, 'id' | 'comments' | 'views' | 'timestamp'>,
@@ -35,12 +34,12 @@ export const saveDiaryEntry = async (
 // 댓글 추가 함수
 export const addCommentToDiary = async (
   {diaryId}: CommentFormProps,
-  comment: Omit<Comment, 'id'>,
+  diaryComment: Omit<DiaryComment, 'id'>,
 ) => {
   try {
     const dirayRef = doc(db, 'diaryEntries', diaryId);
     await updateDoc(dirayRef, {
-      comments: arrayUnion(comment),
+      comments: arrayUnion(diaryComment),
     });
     console.log('댓글 추가 성공!');
   } catch (e) {
@@ -84,7 +83,7 @@ export const saveImageEntry = async (image: File): Promise<string | null> => {
 
 export const deleteCommentFromDiary = async (
   diaryId: string,
-  comment: Comment,
+  diaryComment: DiaryComment,
 ) => {
   try {
     const diaryRef = doc(db, 'diaryEntries', diaryId);
@@ -92,8 +91,8 @@ export const deleteCommentFromDiary = async (
 
     if (diarySnap.exists()) {
       const data = diarySnap.data();
-      const updatedComments = data.comments.filter(
-        (c: Comment) => c.id !== comment.id,
+      const updatedComments = (data.comments as DiaryComment[]).filter(
+        (c: DiaryComment) => c.id !== diaryComment.id,
       ); // 해당 댓글을 제외한 배열
 
       await updateDoc(diaryRef, {
