@@ -1,4 +1,4 @@
-// src/app/diary/write/page.tsx
+// src/app/board/write/page.tsx
 
 'use client';
 

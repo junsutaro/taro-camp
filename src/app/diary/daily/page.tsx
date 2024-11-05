@@ -1,1 +1,1 @@
-// src/app/board/daily/page.tsx
+// src/app/diary/daily/page.tsx

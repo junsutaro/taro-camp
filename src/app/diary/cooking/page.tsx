@@ -1,1 +1,1 @@
-// src/app/board/cooking/page.tsx
+// src/app/diary/cooking/page.tsx

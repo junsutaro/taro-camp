@@ -11,7 +11,6 @@ export default function BottomNavbar() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       setIsLoggedIn(!!user);
-      
     });
 
     return () => unsubscribe();
