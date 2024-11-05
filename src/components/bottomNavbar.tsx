@@ -50,10 +50,10 @@ export default function BottomNavbar() {
           <span>Home</span>
         </div>
       </Link>
-      <Link href="/diary">
+      <Link href="/board">
         <div className="flex flex-col items-center cursor-pointer">
           <span>📖</span>
-          <span>Diary</span>
+          <span>Board</span>
         </div>
       </Link>
       <Link href="/marketing">

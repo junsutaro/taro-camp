@@ -4,10 +4,10 @@
 
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
-import {saveDiaryEntry, saveImageEntry} from '@/services/diaryService';
+import {saveBoardEntry, saveImageEntry} from '@/services/boardService';
 import {getAuth} from 'firebase/auth';
 
-export default function DiaryWritePage() {
+export default function BoardWritePage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [authorName, setAuthorName] = useState('');
@@ -45,7 +45,7 @@ export default function DiaryWritePage() {
         imageURL = await saveImageEntry(image);
       }
 
-      await saveDiaryEntry({
+      await saveBoardEntry({
         title,
         content,
         author: {name: authorName},
@@ -53,11 +53,11 @@ export default function DiaryWritePage() {
         imageURL,
         location: null,
       });
-      alert('Diary entry successfully saved!');
-      router.push('/diary');
+      alert('Board entry successfully saved!');
+      router.push('/board');
     } catch (error) {
-      console.error('Failed to save diary entry:', error);
-      alert('Failed to save diary entry. Please try again.');
+      console.error('Failed to save board entry:', error);
+      alert('Failed to save board entry. Please try again.');
     } finally {
       setLoading(false);
     }

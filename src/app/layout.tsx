@@ -7,7 +7,7 @@ import YoutubePlayer from '@/components/youtubePlayer';
 
 export const metadata: Metadata = {
   title: 'Taro Camp',
-  description: 'Marketing, Cat, Diary ...',
+  description: 'Marketing, Diary, Board ...',
   icons: {
     icon: '/favicon.png',
   },

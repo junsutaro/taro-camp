@@ -71,10 +71,10 @@ export default function Sidebar() {
             <span>Home</span>
           </div>
         </Link>
-        <Link href="/diary">
+        <Link href="/board">
           <div className="flex items-center space-x-2 cursor-pointer hover:text-blue-600 transition-colors">
             <span>📖</span>
-            <span>Diary</span>
+            <span>Board</span>
           </div>
         </Link>
         <Link href="/marketing">

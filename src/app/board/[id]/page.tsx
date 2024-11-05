@@ -1,17 +1,17 @@
-// src/app/diary/[id]/page.tsx
+// src/app/board/[id]/page.tsx
 
 'use client';
 
 import {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import {getDiaryEntries} from '@/services/diaryService';
-import {DiaryEntry, DiaryComment} from '@/types/diaryTypes';
+import {getBoardEntries} from '@/services/boardService';
+import {BoardEntry, BoardComment} from '@/types/boardTypes';
 import CommentForm from '@/components/commentForm';
 import Image from 'next/image';
 import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
 
-export default function DiaryDetailPage() {
-  const [entry, setEntry] = useState<DiaryEntry | null>(null);
+export default function BoardDetailPage() {
+  const [entry, setEntry] = useState<BoardEntry | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
   const params = useParams();
@@ -30,12 +30,12 @@ export default function DiaryDetailPage() {
     if (id) {
       const fetchEntry = async () => {
         try {
-          const entries = await getDiaryEntries();
+          const entries = await getBoardEntries();
           const selectedEntry = entries.find(entry => entry.id === id);
 
           setEntry(selectedEntry || null);
         } catch (error) {
-          console.error('Failed to fetch diary entry:', error);
+          console.error('Failed to fetch board entry:', error);
         } finally {
           setLoading(false);
         }
@@ -48,7 +48,7 @@ export default function DiaryDetailPage() {
   // 댓글 작성 후 추가된 댓글을 다시 불러오기 위한 함수
   const handleCommentChanged = async () => {
     if (id) {
-      const entries = await getDiaryEntries();
+      const entries = await getBoardEntries();
       const updatedEntry = entries.find(entry => entry.id === id);
       setEntry(updatedEntry || null);
     }
@@ -70,7 +70,7 @@ export default function DiaryDetailPage() {
       <div className="mb-4 w-full md:w-[400px] h-auto relative overflow-hidden rounded-lg">
         <Image
           src={entry.imageURL ? entry.imageURL : '/defaultImage.png'}
-          alt="Diary image"
+          alt="Board image"
           layout="responsive" // 이미지를 반응형으로 설정
           width={400}
           height={400}
@@ -87,7 +87,7 @@ export default function DiaryDetailPage() {
       </p>
 
       <CommentForm
-        diaryId={id as string}
+        boardId={id as string}
         onCommentAdded={handleCommentChanged}
         userName={user?.displayName || ''} // 사용자 이름 전달
       />
@@ -95,7 +95,7 @@ export default function DiaryDetailPage() {
       <div className="comments-section mt-8">
         <h2 className="text-2xl font-semibold mb-4">댓글</h2>
         {entry.comments.length > 0 ? (
-          entry.comments.map((comment: DiaryComment) => {
+          entry.comments.map((comment: BoardComment) => {
             // 댓글 timestamp 변환을 렌더링 시점에 처리
             const commentDate =
               comment.timestamp instanceof Date

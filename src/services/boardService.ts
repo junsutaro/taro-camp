@@ -1,4 +1,4 @@
-// src/services/diaryService.ts
+// src/services/boardService.ts
 
 import {
   collection,
@@ -13,13 +13,13 @@ import {
 } from 'firebase/firestore';
 import {db, storage} from '../firebase';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
-import {DiaryComment, CommentFormProps, DiaryEntry} from '../types/diaryTypes';
+import {BoardComment, CommentFormProps, BoardEntry} from '../types/boardTypes';
 // 다이어리 글 저장 함수
-export const saveDiaryEntry = async (
-  entry: Omit<DiaryEntry, 'id' | 'comments' | 'views' | 'timestamp'>,
+export const saveBoardEntry = async (
+  entry: Omit<BoardEntry, 'id' | 'comments' | 'views' | 'timestamp'>,
 ) => {
   try {
-    await addDoc(collection(db, 'diaryEntries'), {
+    await addDoc(collection(db, 'boardEntries'), {
       ...entry,
       timestamp: new Date(),
       comments: [],
@@ -32,14 +32,14 @@ export const saveDiaryEntry = async (
 };
 
 // 댓글 추가 함수
-export const addCommentToDiary = async (
-  {diaryId}: CommentFormProps,
-  diaryComment: Omit<DiaryComment, 'id'>,
+export const addCommentToBoard = async (
+  {boardId}: CommentFormProps,
+  boardComment: Omit<BoardComment, 'id'>,
 ) => {
   try {
-    const dirayRef = doc(db, 'diaryEntries', diaryId);
+    const dirayRef = doc(db, 'boardEntries', boardId);
     await updateDoc(dirayRef, {
-      comments: arrayUnion(diaryComment),
+      comments: arrayUnion(boardComment),
     });
     console.log('댓글 추가 성공!');
   } catch (e) {
@@ -48,16 +48,16 @@ export const addCommentToDiary = async (
 };
 
 // 다이어리 글 읽기 함수
-export const getDiaryEntries = async (): Promise<DiaryEntry[]> => {
+export const getBoardEntries = async (): Promise<BoardEntry[]> => {
   try {
     const q = query(
-      collection(db, 'diaryEntries'),
+      collection(db, 'boardEntries'),
       orderBy('timestamp', 'desc'),
     );
     const querySnapshot = await getDocs(q);
-    const entries: DiaryEntry[] = querySnapshot.docs.map(doc => ({
+    const entries: BoardEntry[] = querySnapshot.docs.map(doc => ({
       id: doc.id,
-      ...(doc.data() as Omit<DiaryEntry, 'id'>),
+      ...(doc.data() as Omit<BoardEntry, 'id'>),
       timestamp: doc.data().timestamp.toDate(),
     }));
     return entries;
@@ -81,21 +81,21 @@ export const saveImageEntry = async (image: File): Promise<string | null> => {
   }
 };
 
-export const deleteCommentFromDiary = async (
-  diaryId: string,
-  diaryComment: DiaryComment,
+export const deleteCommentFromBoard = async (
+  boardId: string,
+  boardComment: BoardComment,
 ) => {
   try {
-    const diaryRef = doc(db, 'diaryEntries', diaryId);
-    const diarySnap = await getDoc(diaryRef);
+    const boardRef = doc(db, 'boardEntries', boardId);
+    const boardSnap = await getDoc(boardRef);
 
-    if (diarySnap.exists()) {
-      const data = diarySnap.data();
-      const updatedComments = (data.comments as DiaryComment[]).filter(
-        (c: DiaryComment) => c.id !== diaryComment.id,
+    if (boardSnap.exists()) {
+      const data = boardSnap.data();
+      const updatedComments = (data.comments as BoardComment[]).filter(
+        (c: BoardComment) => c.id !== boardComment.id,
       ); // 해당 댓글을 제외한 배열
 
-      await updateDoc(diaryRef, {
+      await updateDoc(boardRef, {
         comments: updatedComments, // 댓글 목록 업데이트
       });
       console.log('댓글 삭제 성공!');
