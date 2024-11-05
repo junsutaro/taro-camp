@@ -5,7 +5,8 @@
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {saveBoardEntry, saveImageEntry} from '@/services/boardService';
-import {getAuth} from 'firebase/auth';
+import {v4 as uuidv4} from 'uuid';
+import useCurrentUser from '@/hooks/useCurrentUser';
 
 export default function BoardWritePage() {
   const [title, setTitle] = useState('');
@@ -15,16 +16,17 @@ export default function BoardWritePage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const {user, isLoading: userLoading} = useCurrentUser();
 
   useEffect(() => {
-    const auth = getAuth();
-    const user = auth.currentUser;
-
     if (user) {
       setAuthorName(user.displayName || '익명의 도도새');
       setIsLoggedIn(true);
+    } else {
+      setAuthorName('');
+      setIsLoggedIn(false);
     }
-  }, []);
+  }, [user, userLoading]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -42,7 +44,8 @@ export default function BoardWritePage() {
     try {
       let imageURL = null;
       if (image) {
-        imageURL = await saveImageEntry(image);
+        const uniqueImageName = `${uuidv4()}_${image.name}`;
+        imageURL = await saveImageEntry(image, uniqueImageName);
       }
 
       await saveBoardEntry({

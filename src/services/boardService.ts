@@ -14,6 +14,27 @@ import {
 import {db, storage} from '../firebase';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {BoardComment, CommentFormProps, BoardEntry} from '../types/boardTypes';
+
+// 다이어리 글 읽기 함수
+export const getBoardEntries = async (): Promise<BoardEntry[]> => {
+  try {
+    const q = query(
+      collection(db, 'boardEntries'),
+      orderBy('timestamp', 'desc'),
+    );
+    const querySnapshot = await getDocs(q);
+    const entries: BoardEntry[] = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...(doc.data() as Omit<BoardEntry, 'id'>),
+      timestamp: doc.data().timestamp.toDate(),
+    }));
+    return entries;
+  } catch (e) {
+    console.error('Error fetching documents: ', e);
+    return [];
+  }
+};
+
 // 다이어리 글 저장 함수
 export const saveBoardEntry = async (
   entry: Omit<BoardEntry, 'id' | 'comments' | 'views' | 'timestamp'>,
@@ -47,30 +68,13 @@ export const addCommentToBoard = async (
   }
 };
 
-// 다이어리 글 읽기 함수
-export const getBoardEntries = async (): Promise<BoardEntry[]> => {
-  try {
-    const q = query(
-      collection(db, 'boardEntries'),
-      orderBy('timestamp', 'desc'),
-    );
-    const querySnapshot = await getDocs(q);
-    const entries: BoardEntry[] = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...(doc.data() as Omit<BoardEntry, 'id'>),
-      timestamp: doc.data().timestamp.toDate(),
-    }));
-    return entries;
-  } catch (e) {
-    console.error('Error fetching documents: ', e);
-    return [];
-  }
-};
-
 // 이미지 저장 함수
-export const saveImageEntry = async (image: File): Promise<string | null> => {
+export const saveImageEntry = async (
+  image: File,
+  uniqueName: string,
+): Promise<string | null> => {
   try {
-    const storageRef = ref(storage, `images/${image.name}`);
+    const storageRef = ref(storage, `images/${uniqueName}`);
     const snapshot = await uploadBytes(storageRef, image);
     const downloadURL = await getDownloadURL(snapshot.ref);
     console.log('Image successfully uploaded! URL:', downloadURL);

@@ -14,24 +14,30 @@ export default function BoardListPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const entriesPerPage = 6;
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchEntries = async () => {
+    try {
+      const fetchedEntries = await getBoardEntries();
+      setEntries(fetchedEntries);
+    } catch (error) {
+      console.error('Failed to fetch board entries:', error);
+      setError('Failed to load entries, plz try again~!?');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchEntries = async () => {
-      try {
-        const fetchedEntries = await getBoardEntries();
-        setEntries(fetchedEntries);
-      } catch (error) {
-        console.error('Failed to fetch board entries:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchEntries();
   }, []);
 
   if (loading) {
     return <div className="text-center text-gray-500">로딩중...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
   }
 
   const indexOfLastEntry = currentPage * entriesPerPage;
