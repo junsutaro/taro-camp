@@ -5,6 +5,7 @@ import {useEffect, useState} from 'react';
 import {subscribeToAuthChanges} from '@/services/authService';
 import {signOut, User} from 'firebase/auth';
 import {auth} from '@/firebase';
+import Button from './Button';
 
 export default function Sidebar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -55,12 +56,13 @@ export default function Sidebar() {
               <span className="mr-2">😊</span>
               <span>방가워요 {user?.displayName || '환영합니다!'}</span>{' '}
             </div>
-            <button
+            <Button
               onClick={handleLogout}
-              className="flex cursor-pointer hover:text-blue-600 transition-colors">
+              variant = 'tertiary'
+              className="flex ml-0 px-0 py-0 cursor-pointer transition-colors">
               <span className="mr-2">🚪</span>
               <span>로그아웃</span>
-            </button>
+            </Button>
           </>
         )}
       </div>

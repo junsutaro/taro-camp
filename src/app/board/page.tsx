@@ -2,37 +2,24 @@
 
 'use client';
 
-import {useEffect, useState} from 'react';
-import {getBoardEntries} from '../../services/boardService';
 import Link from 'next/link';
-import {BoardEntry} from '../../types/boardTypes';
 import Pagination from '@/components/Pagination';
 import EntryCard from '@/components/EntryCard';
+import {useBoardEntries} from '@/hooks/useBoardEntries';
+import {usePagination} from '@/hooks/usePagination';
+import {BoardEntry} from '@/types/boardTypes';
+import Button from '@/components/Button';
 
 export default function BoardListPage() {
-  const [entries, setEntries] = useState<BoardEntry[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const {entries, isLoading, error} = useBoardEntries();
   const entriesPerPage = 6;
-  const [error, setError] = useState<string | null>(null);
+  const {currentPage, totalPages, currentData, paginate} =
+    usePagination<BoardEntry>({
+      data: entries,
+      itemsPerPage: entriesPerPage,
+    });
 
-  const fetchEntries = async () => {
-    try {
-      const fetchedEntries = await getBoardEntries();
-      setEntries(fetchedEntries);
-    } catch (error) {
-      console.error('Failed to fetch board entries:', error);
-      setError('Failed to load entries, plz try again~!?');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEntries();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <div className="text-center text-gray-500">로딩중...</div>;
   }
 
@@ -40,27 +27,19 @@ export default function BoardListPage() {
     return <div className="text-center text-red-500">{error}</div>;
   }
 
-  const indexOfLastEntry = currentPage * entriesPerPage;
-  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
-  const currentEntries = entries.slice(indexOfFirstEntry, indexOfLastEntry);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   return (
     <div className="board-list max-w-full mx-auto">
       <h1 className="text-3xl font-bold text-center my-2">게시판</h1>
       <div className="flex justify-end mb-4">
         <Link href="/board/write">
-          <button className="write-button border text-sm text-black px-2 py-2 rounded hover:bg-lime-600 transition-colors">
+          <Button className="text-sm">
             글 작성
-          </button>
+          </Button>
         </Link>
       </div>
       <div className="entries grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-        {currentEntries.length > 0 ? (
-          currentEntries.map(entry => (
-            <EntryCard key={entry.id} entry={entry} />
-          ))
+        {currentData.length > 0 ? (
+          currentData.map(entry => <EntryCard key={entry.id} entry={entry} />)
         ) : (
           <div className="flex col-span-full justify-center">
             <p className="text-center text-gray-500">
@@ -70,8 +49,7 @@ export default function BoardListPage() {
         )}
       </div>
       <Pagination
-        totalEntries={entries.length}
-        entriesPerPage={entriesPerPage}
+        totalPages={totalPages}
         currentPage={currentPage}
         paginate={paginate}
       />

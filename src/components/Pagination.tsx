@@ -2,34 +2,35 @@
 
 'use client';
 
-import { PaginationProps } from "@/types/paginationTypes";
+import {PaginationProps} from '@/types/paginationTypes';
+import Button from './Button';
 
-export default function Pagination({
-  totalEntries,
-  entriesPerPage,
+// const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage paginate }) => {
+const Pagination = ({
+  totalPages,
   currentPage,
   paginate,
-}: PaginationProps) {
+}: PaginationProps): JSX.Element | null => {
+  // const pageNumbers = Array.from({length: totalPages}, (_, i) => i + 1);
   const pageNumbers = [];
-  const totalPages = Math.ceil(totalEntries / entriesPerPage);
-
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
+
+  if (totalPages === 0) return null;
+
   return (
-    <div className="pagintaion flex justify-center my-6">
+    <div className="pagination flex justify-center my-6">
       {pageNumbers.map(number => (
-        <button
+        <Button
           key={number}
           onClick={() => paginate(number)}
-          className={`mx-1 px-4 py-2 rounded ${
-            currentPage === number
-              ? 'bg-lime-700 text-white'
-              : 'bg-gray-200 text-gray-600'
-          } hover:bg-lime-600 transition-colors`}>
+          variant={currentPage === number ? 'primary' : 'secondary'}>
           {number}
-        </button>
+        </Button>
       ))}
     </div>
   );
-}
+};
+
+export default Pagination;

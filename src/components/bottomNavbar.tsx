@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {onAuthStateChanged, signOut} from 'firebase/auth';
 import {useState, useEffect} from 'react';
 import {auth} from '@/firebase';
+import Button from './Button';
 
 export default function BottomNavbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,9 +39,9 @@ export default function BottomNavbar() {
             </Link>
           </>
         ) : (
-          <div className="cursor-pointer" onClick={handleLogout}>
-            로그아웃
-          </div>
+          <Button onClick={handleLogout} variant="tertiary" className='px-0 py-0'>
+            <span>로그아웃</span>
+          </Button>
         )}
       </div>
       <Link href="/">

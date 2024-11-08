@@ -5,6 +5,7 @@ import {addCommentToBoard} from '@/services/boardService'; // 댓글 추가 함�
 import {CommentFormProps, BoardComment} from '@/types/boardTypes';
 import {AuthContext} from '@/contexts/AuthContext';
 import {v4 as uuidv4} from 'uuid';
+import Button from './Button';
 
 export default function CommentForm({
   boardId,
@@ -68,11 +69,11 @@ export default function CommentForm({
           required
           className="border p-2 w-full sm:w-9/12"
         />
-        <button
+        <Button
           type="submit"
-          className="bg-lime-800 text-sm h-10 w-auto text-white px-3 hover:bg-lime-700 rounded whitespace-nowrap">
+          className="text-sm h-10 w-auto whitespace-nowrap">
           댓글 작성
-        </button>
+        </Button>
       </div>
     </form>
   );

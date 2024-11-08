@@ -9,6 +9,7 @@ import {BoardEntry, BoardComment} from '@/types/boardTypes';
 import CommentForm from '@/components/commentForm';
 import Image from 'next/image';
 import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
+import Button from '@/components/Button';
 
 export default function BoardDetailPage() {
   const [entry, setEntry] = useState<BoardEntry | null>(null);
@@ -119,11 +120,7 @@ export default function BoardDetailPage() {
         )}
       </div>
 
-      <button
-        onClick={() => router.back()}
-        className="bg-lime-700 text-white px-4 py-2 rounded hover:bg-lime-600 transition-colors mt-6">
-        뒤로가기~{' '}
-      </button>
+      <Button onClick={() => router.back()}>뒤로가기~ </Button>
     </div>
   );
 }
