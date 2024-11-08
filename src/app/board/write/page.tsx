@@ -7,6 +7,7 @@ import {useRouter} from 'next/navigation';
 import {saveBoardEntry, saveImageEntry} from '@/services/boardService';
 import {v4 as uuidv4} from 'uuid';
 import useCurrentUser from '@/hooks/useCurrentUser';
+import Button from '@/components/Button';
 
 export default function BoardWritePage() {
   const [title, setTitle] = useState('');
@@ -114,14 +115,12 @@ export default function BoardWritePage() {
         </label>
         <input type="file" onChange={handleImageChange} className="w-full" />
       </div>
-      <button
+      <Button
         onClick={handleSubmit}
         disabled={loading}
-        className={`bg-lime-800 text-white px-4 py-2 rounded hover:bg-lime-600 transition-colors ${
-          loading ? 'opacity-50 cursor-not-allowed' : ''
-        }`}>
+        className={`${loading ? 'opacity-50 cursor-not-allowed' : ''}`}>
         {loading ? 'Saving...' : '저장'}
-      </button>
+      </Button>
     </div>
   );
 }

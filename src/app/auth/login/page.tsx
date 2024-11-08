@@ -2,15 +2,16 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/firebase';
+import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {signInWithEmailAndPassword} from 'firebase/auth';
+import {auth} from '@/firebase';
+import Button from '@/components/Button';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -19,10 +20,9 @@ export default function LoginPage() {
       return;
     }
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
-   
       const email = `${username}@example.com`; // 아이디를 이메일 형식으로 변환
       await signInWithEmailAndPassword(auth, email, password); // 로그인 요청
       alert('로그인 성공!');
@@ -31,7 +31,7 @@ export default function LoginPage() {
       console.error('로그인 실패:', error);
       alert('로그인에 실패했습니다.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -39,32 +39,36 @@ export default function LoginPage() {
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">로그인</h1>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">아이디</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          아이디
+        </label>
         <input
           type="text"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={e => setUsername(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded"
           placeholder="아이디를 입력하세요"
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">비밀번호</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          비밀번호
+        </label>
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded"
           placeholder="비밀번호를 입력하세요"
         />
       </div>
-      <button
+
+      <Button
         onClick={handleLogin}
-        disabled={loading}
-        className={`bg-lime-800 text-white px-4 py-2 rounded hover:bg-lime-600 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-      >
-        {loading ? '로그인 중...' : '로그인'}
-      </button>
+        disabled={isLoading}
+        className={`${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+        {isLoading ? '로그인 중...' : '로그인'}
+      </Button>
     </div>
   );
 }
