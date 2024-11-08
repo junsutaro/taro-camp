@@ -9,6 +9,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth';
+import Button from '@/components/Button';
 
 export default function SignupPage() {
   const [username, setUsername] = useState(''); // 아이디 입력
@@ -87,14 +88,12 @@ export default function SignupPage() {
           placeholder="닉네임을 입력하세요"
         />
       </div>
-      <button
+      <Button
         onClick={handleSignup}
         disabled={loading}
-        className={`bg-lime-800 text-white px-4 py-2 rounded hover:bg-lime-600 transition-colors ${
-          loading ? 'opacity-50 cursor-not-allowed' : ''
-        }`}>
+        className={` ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}>
         {loading ? '가입 중...' : '회원가입'}
-      </button>
+      </Button>
     </div>
   );
 }
