@@ -4,6 +4,7 @@
 
 import { youtubeLinks } from '@/Data/youtubeLinks';
 import {useEffect, useState} from 'react';
+import Button from './Button';
 
 
 
@@ -32,11 +33,12 @@ export default function YoutubePlayer() {
   return (
     <div>
       {isMobile && (
-        <button
+        <Button
           onClick={() => setShowPlayer(!showPlayer)} // 버튼 클릭 시 상태 변경
+          variant='tertiary'
           className="fixed z-20 top-0 right-0 m-4 p-2 rounded-lg">
           {showPlayer ? '유튜브 접기' : '열기'}
-        </button>
+        </Button>
       )}
       <div
         className={`fixed z-10 left-0
