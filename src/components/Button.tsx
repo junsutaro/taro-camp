@@ -16,7 +16,9 @@ const Button = ({
 }: ButtonProps): JSX.Element => {
   return (
     <button
-      className={`mx-1 px-4 py-2 rounded transition-colors ${variantStyles[variant]} ${className}`}
+      // Avoid setting layout-related styles (e.g., padding, margin) here.
+      // This component should focus on functionality.
+      className={`rounded transition-colors ${variantStyles[variant]} ${className}`}
       {...rest}>
       {children}
     </button>
