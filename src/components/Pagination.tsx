@@ -1,36 +1,22 @@
 // src/components/Paginations.tsx
 
-'use client';
-
 import {PaginationProps} from '@/types/paginationTypes';
-import Button from './Button';
+import Link from 'next/link';
 
-// const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage paginate }) => {
-const Pagination = ({
-  totalPages,
-  currentPage,
-  paginate,
-}: PaginationProps): JSX.Element | null => {
-  // const pageNumbers = Array.from({length: totalPages}, (_, i) => i + 1);
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
-
-  if (totalPages === 0) return null;
+export default function Pagination({ totalPages, currentPage }: PaginationProps) {
+  if (totalPages <= 1) return null;
 
   return (
-    <div className="pagination flex justify-center my-6">
-      {pageNumbers.map(number => (
-        <Button
-          key={number}
-          onClick={() => paginate(number)}
-          variant={currentPage === number ? 'primary' : 'secondary'}>
-          {number}
-        </Button>
+    <div className="flex justify-center mt-4">
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        <Link
+          key={page}
+          href={`/board?page=${page}`} // ✅ Next.js의 searchParams를 활용
+          className={`px-4 py-2 mx-1 border ${currentPage === page ? "bg-green-800 text-white" : "bg-gray-200"}`}
+        >
+          {page}
+        </Link>
       ))}
     </div>
   );
-};
-
-export default Pagination;
+}

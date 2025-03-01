@@ -1,68 +1,41 @@
 // src/app/board/[id]/page.tsx
+"use client";
 
-'use client';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { Timestamp } from "firebase/firestore";
+import CommentForm from "@/components/commentForm";
+import Button from "@/components/Button";
+import { fetchBoardEntry } from "@/serverActions/boardActions";
+import { BoardEntry, BoardComment } from "@/types/boardTypes";
 
-import {useEffect, useState} from 'react';
-import {useParams, useRouter} from 'next/navigation';
-import {getBoardEntries} from '@/services/boardService';
-import {BoardEntry, BoardComment} from '@/types/boardTypes';
-import CommentForm from '@/components/commentForm';
-import Image from 'next/image';
-import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
-import Button from '@/components/Button';
-
-export default function BoardDetailPage() {
+export default function BoardDetailPage({ params }: { params: { id: string } }) {
   const [entry, setEntry] = useState<BoardEntry | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
-  const params = useParams();
   const router = useRouter();
-  const id = params?.id;
+
+  useEffect(() => {
+    // 서버에서 데이터를 가져오는 비동기 함수
+    const fetchData = async () => {
+      const data = await fetchBoardEntry(params.id);
+      setEntry(data);
+    };
+
+    fetchData();
+  }, [params.id]); // params.id가 변경될 때마다 실행
 
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, currentUser => {
-      setUser(currentUser); // 현재 로그인한 사용자 정보를 저장
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
     });
-    return () => unsubscribe(); // 컴포넌트 언마운트 시 구독 해제
+    return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (id) {
-      const fetchEntry = async () => {
-        try {
-          const entries = await getBoardEntries();
-          const selectedEntry = entries.find(entry => entry.id === id);
-
-          setEntry(selectedEntry || null);
-        } catch (error) {
-          console.error('Failed to fetch board entry:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchEntry();
-    }
-  }, [id]);
-
-  // 댓글 작성 후 추가된 댓글을 다시 불러오기 위한 함수
-  const handleCommentChanged = async () => {
-    if (id) {
-      const entries = await getBoardEntries();
-      const updatedEntry = entries.find(entry => entry.id === id);
-      setEntry(updatedEntry || null);
-    }
-  };
-
-  if (loading) {
-    return <div className="text-center text-gray-500">로딩중...</div>;
-  }
-
   if (!entry) {
-    return (
-      <div className="text-center text-gray-500">이 URL에는 글이 없어요!</div>
-    );
+    return <div className="text-center text-gray-500">이 URL에는 글이 없어요!</div>;
   }
 
   return (
@@ -70,9 +43,9 @@ export default function BoardDetailPage() {
       <h1 className="text-3xl font-bold mb-4">{entry.title}</h1>
       <div className="mb-4 w-full md:w-[400px] h-auto relative overflow-hidden rounded-lg">
         <Image
-          src={entry.imageURL ? entry.imageURL : '/defaultImage.png'}
+          src={entry.imageURL ? entry.imageURL : "/defaultImage.png"}
           alt="Board image"
-          layout="responsive" // 이미지를 반응형으로 설정
+          layout="responsive"
           width={400}
           height={400}
           className="object-cover"
@@ -80,28 +53,30 @@ export default function BoardDetailPage() {
         />
       </div>
       <p className="text-gray-700 mb-6">{entry.content}</p>
-      <p className="text-sm text-gray-500">
-        {entry.author?.name || '익명의 도도새'}
-      </p>
+      <p className="text-sm text-gray-500">{entry.author?.name || "익명의 도도새"}</p>
       <p className="text-sm text-gray-400 mb-4">
-        {new Date(entry.timestamp).toLocaleString()}
+        {typeof entry.timestamp === "string"
+          ? new Date(entry.timestamp).toLocaleString()
+          : (entry.timestamp as Timestamp).toDate().toLocaleString()}
       </p>
 
       <CommentForm
-        boardId={id as string}
-        onCommentAdded={handleCommentChanged}
-        userName={user?.displayName || ''} // 사용자 이름 전달
+        boardId={params.id}
+        onCommentAdded={async () => {
+          const updatedEntry = await fetchBoardEntry(params.id);
+          setEntry(updatedEntry); // 댓글 추가 후 데이터 갱신
+        }}
+        userName={user?.displayName || ""}
       />
 
       <div className="comments-section mt-8">
         <h2 className="text-2xl font-semibold mb-4">댓글</h2>
         {entry.comments.length > 0 ? (
           entry.comments.map((comment: BoardComment) => {
-            // 댓글 timestamp 변환을 렌더링 시점에 처리
             const commentDate =
               comment.timestamp instanceof Date
                 ? comment.timestamp
-                : comment.timestamp.toDate();
+                : comment.timestamp.toLocaleString();
 
             return (
               <div key={comment.id} className="comment mb-4 p-4 border rounded">
@@ -120,7 +95,7 @@ export default function BoardDetailPage() {
         )}
       </div>
 
-      <Button onClick={() => router.back()}>뒤로가기~ </Button>
+      <Button onClick={() => router.back()}>뒤로가기~</Button>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 // src/services/boardService.ts
+import { Timestamp } from "firebase/firestore";
 
 import {
   collection,
@@ -16,24 +17,64 @@ import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {BoardComment, CommentFormProps, BoardEntry} from '../types/boardTypes';
 
 // 다이어리 글 읽기 함수
+
+
 export const getBoardEntries = async (): Promise<BoardEntry[]> => {
   try {
-    const q = query(
-      collection(db, 'boardEntries'),
-      orderBy('timestamp', 'desc'),
-    );
-    const querySnapshot = await getDocs(q);
-    const entries: BoardEntry[] = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...(doc.data() as Omit<BoardEntry, 'id'>),
-      timestamp: doc.data().timestamp.toDate(),
-    }));
-    return entries;
-  } catch (e) {
-    console.error('Error fetching documents: ', e);
+    const q = query(collection(db, "boardEntries"), orderBy("timestamp", "desc"));
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((doc) => {
+      // Firestore 데이터가 BoardEntry의 구조를 따른다고 가정하고 타입 단언
+      const data = doc.data() as BoardEntry;
+
+      return {
+        id: doc.id,
+        ...data,
+        // 이전에 저장한 글은 TimeStamp, 
+        timestamp: data.timestamp instanceof Timestamp
+          ? data.timestamp.toDate().toISOString()
+          // 이후에 저장될 글들은 문자열임
+          : data.timestamp,
+        comments: (data.comments || []).map((comment: BoardComment) => ({
+          ...comment,
+          timestamp: comment.timestamp instanceof Timestamp
+            ? comment.timestamp.toDate().toISOString()
+            : comment.timestamp,
+        })),
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching board entries:", error);
     return [];
   }
 };
+
+
+
+
+// 특정 게시물 하나만 가져오는 함수
+export const getBoardEntryById = async (id: string): Promise<BoardEntry | null> => {
+  try {
+    const boardRef = doc(db, 'boardEntries', id);
+    const boardSnap = await getDoc(boardRef);
+
+    if (boardSnap.exists()) {
+      return {
+        id: boardSnap.id,
+        ...(boardSnap.data() as Omit<BoardEntry, 'id'>),
+        timestamp: boardSnap.data().timestamp.toDate(),
+      };
+    } else {
+      console.warn(`게시글 ${id}을 찾을 수 없습니다.`);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching board entry:', error);
+    return null;
+  }
+};
+
 
 // 다이어리 글 저장 함수
 export const saveBoardEntry = async (
