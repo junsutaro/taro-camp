@@ -6,6 +6,7 @@ import {CommentFormProps, BoardComment} from '@/types/boardTypes';
 import {AuthContext} from '@/contexts/AuthContext';
 import {v4 as uuidv4} from 'uuid';
 import Button from './Button';
+import { Timestamp } from 'firebase/firestore';
 
 export default function CommentForm({
   boardId,
@@ -33,7 +34,7 @@ export default function CommentForm({
       id: uuidv4(), // 고유 ID 생성
       author: {name: authorName},
       content,
-      timestamp: new Date(),
+      timestamp: Timestamp.now(), // ✅ Firestore Timestamp 사용
     };
 
     await addCommentToBoard({boardId}, newComment);
